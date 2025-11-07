@@ -1,0 +1,16 @@
+version: 2025-11-02
+kpis:
+  - name: revenue
+    sql: SUM(orders.amount)
+    grain: day
+    filters:
+      - channel IN ('web','app')
+    toddler: "Money from orders."
+  - name: orders
+    sql: COUNT(*)
+    grain: day
+    toddler: "How many receipts."
+  - name: aov
+    sql: SUM(orders.amount) / NULLIF(COUNT(*),0)
+    grain: day
+    toddler: "Average coins per receipt."

@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+sqlalchemy
+psycopg[binary]
+pandas
+langchain
+langchain-openai
+chromadb
+tiktoken
+markdown
