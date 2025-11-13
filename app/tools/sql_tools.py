@@ -6,23 +6,16 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from app.db import run_query
 
 def safe_sql_executor(sql: str):
-    """
-    Executes only safe SELECT queries.
-    Blocks all write/DDL commands.
-    """
     low = sql.lower()
     forbidden = ["insert", "update", "delete", "drop", "alter", "create", "grant", "revoke"]
-
-    # Guardrail: reject dangerous statements
-    if any(word in low for word in forbidden):
-        return {"error": "❌ Unsafe SQL detected — only SELECT is allowed."}
-
+    if any(w in low for w in forbidden):
+        return {"error": "Unsafe SQL detected"}
     try:
-        # Execute using shared db helper
+        print(f"[SQL LOG] Executing query: {sql}")  # ✅ minimal query logging
         rows = run_query(sql)
-        return [dict(r) for r in rows] if rows else []
+        return [dict(r) for r in rows]
     except Exception as e:
-        return {"error": f"⚠️ SQL error: {e}"}
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     # Quick test

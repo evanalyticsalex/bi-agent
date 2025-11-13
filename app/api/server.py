@@ -1,17 +1,17 @@
-from fastapi import FastAPI
-from app.tools.sql_tools import safe_sql_executor
-import traceback
+import os
+print("🔥 SERVER LOADED — WORKING DIR:", os.getcwd())
 
-app = FastAPI()
+from fastapi import FastAPI, Query
+from app.agent.planner import ask_agent
 
-@app.post("/sql")
-def sql(payload: dict):
-    sql = payload.get("sql", "")
-    try:
-        result = safe_sql_executor(sql)
-        print("DEBUG result:", result)
-        return result
-    except Exception as e:
-        print("ERROR:", e)
-        traceback.print_exc()
-        return {"error": str(e)}
+app = FastAPI(title="BI Agent", version="1.0")
+
+@app.get("/ask")
+def ask(question: str = Query(..., description="Type your BI question here")):
+    return ask_agent(question)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
